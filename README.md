@@ -33,5 +33,5 @@ Add new art eras to expand your collection
 💡 Why You'll Love It
 Whether you’re an art enthusiast, developer, or just curious, this project combines technology and art to create a next-level interactive experience.
 
-🌟 Live Preview Coming Soon!
-Stay tuned for a hosted demo to experience the magic yourself.
+🌟 Live Preview 
+[hosted demo to experience the magic yourself.](https://adyasha9.github.io/immersive-art-gallery/)
