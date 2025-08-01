@@ -9,6 +9,10 @@ interface ArtPiece {
   [key: string]: any;
 }
 
+type ArtPos = {
+  pos: [number, number, number];
+  rot: [number, number, number];
+};
 interface ArtGallery3DProps {
   artPieces?: ArtPiece[];
   onArtClick?: (art: ArtPiece) => void;
@@ -41,6 +45,14 @@ class FirstPersonControls {
   
   onClick() {
     this.domElement.requestPointerLock();
+  }
+
+  onPointerlockChange() {
+    if (document.pointerLockElement === this.domElement) {
+      this.domElement.style.cursor = 'none';
+    } else {
+      this.domElement.style.cursor = 'auto';
+    }
   }
   
   onKeyDown(event: KeyboardEvent) {
@@ -189,9 +201,9 @@ const ArtGallery3D: React.FC<ArtGallery3DProps> = ({
   const mountRef = useRef<HTMLDivElement>(null);
   const [isStarted, setStarted] = useState(false);
   const [selectedArt, setSelectedArt] = useState<ArtPiece | null>(null);
-  const controlsRef = useRef<FirstPersonControls>();
+  const controlsRef = useRef<FirstPersonControls | null>(null);
   const wallsRef = useRef<THREE.Mesh[]>([]);
-  const clockRef = useRef<THREE.Clock>();
+  const clockRef = useRef<THREE.Clock>(new THREE.Clock());
 
   useEffect(() => {
     if (!mountRef.current || !isStarted) return;
@@ -273,7 +285,7 @@ const ArtGallery3D: React.FC<ArtGallery3DProps> = ({
         wallMaterial.needsUpdate = true;
       },
       undefined,
-      (error) => console.log('Wall texture not found, using solid color')
+      () => console.log('Wall texture not found, using solid color')
     );
 
     textureLoader.load(
@@ -286,7 +298,7 @@ const ArtGallery3D: React.FC<ArtGallery3DProps> = ({
         floorMaterial.needsUpdate = true;
       },
       undefined,
-      (error) => console.log('Floor texture not found, using solid color')
+      () => console.log('Floor texture not found, using solid color')
     );
 
     // Floor
@@ -349,7 +361,7 @@ const ArtGallery3D: React.FC<ArtGallery3DProps> = ({
     wallsRef.current = walls;
 
     // Artwork positions
-    const artworkPositions = [
+    const artworkPositions: ArtPos[] = [
       // North wall - main corridor
       { pos: [-8, 3, -19.7], rot: [0, 0, 0] },
       { pos: [0, 3, -19.7], rot: [0, 0, 0] },
@@ -401,7 +413,7 @@ const ArtGallery3D: React.FC<ArtGallery3DProps> = ({
     // Load textures and create artwork
     const loader = new THREE.TextureLoader();
     
-    artworkPositions.forEach((artPos, index) => {
+    artworkPositions.forEach((artPos:ArtPos, index) => {
       if (index < artPieces.length) {
         const art = artPieces[index];
 
